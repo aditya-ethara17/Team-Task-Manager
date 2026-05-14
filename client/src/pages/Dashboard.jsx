@@ -69,15 +69,15 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Dashboard</h1>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {statCards.map((card) => (
-          <div key={card.label} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+          <div key={card.label} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500 font-medium">{card.label}</p>
-                <p className="text-3xl font-bold text-gray-800 mt-1">{card.value}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{card.label}</p>
+                <p className="text-3xl font-bold text-gray-800 dark:text-gray-100 mt-1">{card.value}</p>
               </div>
               <div className={`w-3 h-3 rounded-full ${card.color}`} />
             </div>
@@ -109,11 +109,11 @@ export default function Dashboard() {
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-6">
           {stats.myTasks.length > 0 && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">My Tasks</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">My Tasks</h2>
               <div className="space-y-3">
                 {stats.myTasks.map((task) => (
-                  <div key={task.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={task.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-800 truncate">{task.title}</p>
                       <p className="text-xs text-gray-500">{task.project.name}</p>
@@ -128,11 +128,11 @@ export default function Dashboard() {
           )}
 
           {isSuperAdmin && stats.topPerformers?.length > 0 && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Top Performers</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Top Performers</h2>
               <div className="space-y-3">
                 {stats.topPerformers.map((u, i) => (
-                  <div key={u.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={u.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <div className="flex items-center space-x-3">
                       <span className="text-sm font-bold text-gray-400 w-5">#{i + 1}</span>
                       <div>
@@ -150,11 +150,11 @@ export default function Dashboard() {
 
         <div className="space-y-6">
           {stats.overdueTasks.length > 0 && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-semibold text-red-700 mb-4">Overdue Tasks</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h2 className="text-lg font-semibold text-red-700 dark:text-red-400 mb-4">Overdue Tasks</h2>
               <div className="space-y-3">
                 {stats.overdueTasks.map((task) => (
-                  <div key={task.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                  <div key={task.id} className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-100 dark:border-red-800">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-red-800 truncate">{task.title}</p>
                       <p className="text-xs text-red-600">
@@ -171,11 +171,11 @@ export default function Dashboard() {
           )}
 
           {isSuperAdmin && stats.recentActivities?.length > 0 && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Recent Activity</h2>
               <div className="space-y-2">
                 {stats.recentActivities.map((log) => (
-                  <div key={log.id} className="flex items-start space-x-2 text-sm p-2 hover:bg-gray-50 rounded-lg">
+                  <div key={log.id} className="flex items-start space-x-2 text-sm p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
                     <span className="text-xs mt-0.5">{actionIcon[log.action] || '📋'}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-gray-700 truncate">{log.details || `${log.action} ${log.entity}`}</p>
@@ -188,8 +188,8 @@ export default function Dashboard() {
           )}
 
           {isSuperAdmin && stats.recentUsers?.length > 0 && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Recent Signups</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Recent Signups</h2>
               <div className="space-y-3">
                 {stats.recentUsers.map((u) => (
                   <div key={u.id} className="flex items-center justify-between p-2">

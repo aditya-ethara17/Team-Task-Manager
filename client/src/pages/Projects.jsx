@@ -52,7 +52,7 @@ export default function Projects() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Projects</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Projects</h1>
         <button
           onClick={() => setShowModal(true)}
           className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
@@ -66,9 +66,9 @@ export default function Projects() {
       )}
 
       {projectList.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-xl border border-gray-100 shadow-sm">
-          <p className="text-gray-400 text-lg">No projects yet</p>
-          <p className="text-gray-400 text-sm mt-1">Create your first project to get started</p>
+        <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+          <p className="text-gray-400 dark:text-gray-500 text-lg">No projects yet</p>
+          <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Create your first project to get started</p>
           <button
             onClick={() => setShowModal(true)}
             className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
@@ -82,17 +82,17 @@ export default function Projects() {
             <Link
               key={project.id}
               to={`/projects/${project.id}`}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
             >
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">{project.name}</h3>
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">{project.name}</h3>
               {project.description && (
-                <p className="text-sm text-gray-500 mb-4 line-clamp-2">{project.description}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">{project.description}</p>
               )}
-              <div className="flex items-center justify-between text-sm text-gray-400">
+              <div className="flex items-center justify-between text-sm text-gray-400 dark:text-gray-500">
                 <span>{project._count.tasks} tasks</span>
                 <span>{project._count.members} members</span>
               </div>
-              <p className="text-xs text-gray-400 mt-2">Created by {project.creator.name}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">Created by {project.creator.name}</p>
             </Link>
           ))}
         </div>

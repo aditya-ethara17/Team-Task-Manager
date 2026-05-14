@@ -11,6 +11,7 @@ import KanbanBoard from './pages/KanbanBoard';
 import MyTasks from './pages/MyTasks';
 import Issues from './pages/Issues';
 import Timesheets from './pages/Timesheets';
+import Settings from './pages/Settings';
 import Users from './pages/Users';
 
 function GuestRoute({ children }) {
@@ -28,6 +29,7 @@ export default function App() {
       <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
       <Route path="/my-tasks" element={<ProtectedRoute><Layout><MyTasks /></Layout></ProtectedRoute>} />
       <Route path="/timesheets" element={<ProtectedRoute><Layout><Timesheets /></Layout></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
       <Route path="/projects" element={<ProtectedRoute><Layout><Projects /></Layout></ProtectedRoute>} />
       <Route path="/projects/:id" element={<ProtectedRoute><Layout><ProjectDetail /></Layout></ProtectedRoute>} />
       <Route path="/projects/:id/kanban" element={<ProtectedRoute><Layout><KanbanBoard /></Layout></ProtectedRoute>} />
