@@ -12,6 +12,7 @@ const commentRoutes = require('./routes/commentRoutes');
 const subtaskRoutes = require('./routes/subtaskRoutes');
 const labelRoutes = require('./routes/labelRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const timeRoutes = require('./routes/timeRoutes');
 const errorHandler = require('./utils/errorHandler');
 
 const app = express();
@@ -30,6 +31,7 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/subtasks', subtaskRoutes);
 app.use('/api/labels', labelRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/time', timeRoutes);
 
 const uploadsDir = path.join(__dirname, '../uploads');
 app.use('/uploads', express.static(uploadsDir));

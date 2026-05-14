@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import TaskComments from '../components/TaskComments';
 import TaskChecklist from '../components/TaskChecklist';
 import LabelPicker from '../components/LabelPicker';
+import TimeLog from '../components/TimeLog';
+import TaskActivity from '../components/TaskActivity';
 
 const statusOptions = ['TODO', 'IN_PROGRESS', 'REVIEW', 'DONE'];
 const priorityOptions = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
@@ -139,6 +141,19 @@ export default function ProjectDetail() {
     } catch (err) {
       alert(err.response?.data?.error || 'Failed to delete file');
     }
+  };
+
+  const handleWatchTask = async (taskId) => {
+    try {
+      await tasks.watch(taskId);
+      fetchProject();
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to toggle watch');
+    }
+  };
+
+  const isWatching = (task) => {
+    return task.watchers?.some(w => w.user.id === user?.id);
   };
 
   const handleDeleteProject = async () => {
@@ -459,12 +474,37 @@ export default function ProjectDetail() {
                             commentsList={task.comments || []}
                             onRefresh={fetchProject}
                           />
+
+                          {/* Time Tracking */}
+                          <TimeLog
+                            taskId={task.id}
+                            entries={task.timeEntries || []}
+                            totalHours={(task.timeEntries || []).reduce((s, e) => s + e.hours, 0)}
+                            onRefresh={fetchProject}
+                          />
+
+                          {/* Activity */}
+                          <TaskActivity
+                            taskId={task.id}
+                            taskTitle={task.title}
+                          />
                         </div>
                       )}
                     </div>
 
                     {/* Actions */}
                     <div className="flex items-center space-x-2 ml-4 flex-shrink-0">
+                      <button
+                        onClick={() => handleWatchTask(task.id)}
+                        className={`text-xs font-medium px-2 py-1 rounded transition-colors ${
+                          isWatching(task)
+                            ? 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'
+                            : 'text-gray-400 hover:text-indigo-600 hover:bg-gray-100'
+                        }`}
+                        title={isWatching(task) ? 'Unwatch' : 'Watch'}
+                      >
+                        {isWatching(task) ? '👁 Watching' : '👁 Watch'}
+                      </button>
                       {editTaskId === task.id ? (
                         <select
                           value={editStatus}

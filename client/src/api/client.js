@@ -46,6 +46,10 @@ export const tasks = {
   getById: (id) => api.get(`/tasks/${id}`),
   search: (params) => api.get('/tasks/search', { params }),
   kanban: (projectId) => api.get(`/tasks/kanban/${projectId}`),
+  my: (params) => api.get('/tasks/my', { params }),
+  myKanban: () => api.get('/tasks/my/kanban'),
+  watch: (id) => api.post(`/tasks/${id}/watch`),
+  watchStatus: (id) => api.get(`/tasks/${id}/watch`),
 };
 
 export const comments = {
@@ -73,6 +77,12 @@ export const notifications = {
   getMy: () => api.get('/notifications'),
   markRead: (id) => api.patch(`/notifications/${id}/read`),
   markAllRead: () => api.patch('/notifications/read-all'),
+};
+
+export const timeEntries = {
+  getByTask: (taskId) => api.get(`/time/task/${taskId}`),
+  create: (taskId, data) => api.post(`/time/task/${taskId}`, data),
+  delete: (id) => api.delete(`/time/${id}`),
 };
 
 export const dashboard = {

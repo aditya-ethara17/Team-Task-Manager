@@ -48,6 +48,8 @@ model User {
   activityLogs   ActivityLog[]
   comments       TaskComment[]
   notifications  Notification[]
+  timeEntries    TimeEntry[]
+  watchedTasks   TaskWatcher[]
 }
 
 model Project {
@@ -101,6 +103,8 @@ model Task {
   notifications Notification[]
   dependents  TaskDependency[] @relation("TaskDependent")
   dependsOn   TaskDependency[] @relation("TaskDependsOn")
+  timeEntries   TimeEntry[]
+  watchers      TaskWatcher[]
 }
 
 model TaskFile {
@@ -201,4 +205,29 @@ model TaskDependency {
   dependsOn Task @relation("TaskDependsOn", fields: [dependsOnId], references: [id], onDelete: Cascade)
 
   @@unique([dependentId, dependsOnId])
+}
+
+model TimeEntry {
+  id          String   @id @default(cuid())
+  hours       Float
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  taskId String
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId String
+  user   User @relation(fields: [userId], references: [id])
+}
+
+model TaskWatcher {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  taskId String
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId String
+  user   User @relation(fields: [userId], references: [id])
+
+  @@unique([taskId, userId])
 }

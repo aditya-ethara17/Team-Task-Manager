@@ -32,6 +32,9 @@ export default function Layout({ children }) {
                 <Link to="/dashboard" className={linkClass('/dashboard')}>
                   Dashboard
                 </Link>
+                <Link to="/my-tasks" className={linkClass('/my-tasks')}>
+                  My Tasks
+                </Link>
                 <Link to="/projects" className={isActive('/projects') ? 'px-3 py-2 rounded-md text-sm font-medium bg-indigo-700' : 'px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500'}>
                   Projects
                 </Link>

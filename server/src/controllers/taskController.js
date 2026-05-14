@@ -17,6 +17,13 @@ const taskIncludes = {
   subtasks: { orderBy: { createdAt: 'asc' } },
   labels: {
     include: { label: true }
+  },
+  timeEntries: {
+    include: { user: { select: { id: true, name: true } } },
+    orderBy: { createdAt: 'desc' }
+  },
+  watchers: {
+    include: { user: { select: { id: true, name: true } } }
   }
 };
 
@@ -82,17 +89,29 @@ const update = async (req, res, next) => {
     const task = await prisma.task.findUnique({ where: { id: req.params.id } });
     if (!task) return res.status(404).json({ error: 'Task not found' });
 
-    if (req.user.role !== 'SUPER_ADMIN') {
+    let isAdmin = req.user.role === 'SUPER_ADMIN';
+    let isAssignee = task.assigneeId === req.user.id;
+
+    if (!isAdmin) {
       const membership = await prisma.projectMember.findUnique({
         where: { projectId_userId: { projectId: task.projectId, userId: req.user.id } }
       });
       if (!membership) return res.status(403).json({ error: 'Not a project member' });
-      if (membership.role !== 'ADMIN' && task.assigneeId !== req.user.id) {
-        return res.status(403).json({ error: 'Only admin or assignee can update this task' });
-      }
+      if (membership.role === 'ADMIN') isAdmin = true;
     }
 
     const { title, description: desc, status: st, priority, dueDate, assigneeId } = req.body;
+
+    if (!isAdmin && !isAssignee) {
+      return res.status(403).json({ error: 'Only admin or assignee can update this task' });
+    }
+
+    if (!isAdmin && isAssignee) {
+      if (title !== undefined || priority !== undefined || dueDate !== undefined || assigneeId !== undefined) {
+        return res.status(403).json({ error: 'Taskers can only update status and description' });
+      }
+    }
+
     const updated = await prisma.task.update({
       where: { id: req.params.id },
       data: {
@@ -123,6 +142,23 @@ const update = async (req, res, next) => {
     if (title && title !== task.title) changes.push('title changed');
     if (assigneeId && assigneeId !== task.assigneeId) changes.push('assignee changed');
     await logActivity(req.user.id, 'UPDATE', 'Task', task.id, `Updated task "${updated.title}"${changes.length ? ': ' + changes.join(', ') : ''}`);
+
+    if (st && st !== task.status) {
+      const watchers = await prisma.taskWatcher.findMany({
+        where: { taskId: task.id, userId: { not: req.user.id } },
+        select: { userId: true }
+      });
+      for (const w of watchers) {
+        await prisma.notification.create({
+          data: {
+            type: 'TASK_UPDATED',
+            message: `Task "${updated.title}" moved to ${st.replace('_', ' ')}`,
+            userId: w.userId,
+            taskId: task.id
+          }
+        });
+      }
+    }
   } catch (error) {
     next(error);
   }
@@ -200,19 +236,10 @@ const kanban = async (req, res, next) => {
       orderBy: { createdAt: 'desc' }
     });
 
-    const columns = {
-      TODO: [],
-      IN_PROGRESS: [],
-      REVIEW: [],
-      DONE: []
-    };
-
+    const columns = { TODO: [], IN_PROGRESS: [], REVIEW: [], DONE: [] };
     tasks.forEach(task => {
-      if (columns[task.status]) {
-        columns[task.status].push(task);
-      } else {
-        columns.TODO.push(task);
-      }
+      if (columns[task.status]) columns[task.status].push(task);
+      else columns.TODO.push(task);
     });
 
     res.json(columns);
@@ -242,4 +269,109 @@ const getById = async (req, res, next) => {
   }
 };
 
-module.exports = { create, update, remove, search, kanban, getById };
+const watch = async (req, res, next) => {
+  try {
+    const task = await prisma.task.findUnique({
+      where: { id: req.params.id },
+      include: { project: { include: { members: true } } }
+    });
+    if (!task) return res.status(404).json({ error: 'Task not found' });
+
+    if (req.user.role !== 'SUPER_ADMIN') {
+      const isMember = task.project.members.some(m => m.userId === req.user.id);
+      if (!isMember) return res.status(403).json({ error: 'Not a project member' });
+    }
+
+    const existing = await prisma.taskWatcher.findUnique({
+      where: { taskId_userId: { taskId: req.params.id, userId: req.user.id } }
+    });
+
+    if (existing) {
+      await prisma.taskWatcher.delete({ where: { id: existing.id } });
+      res.json({ watching: false });
+    } else {
+      await prisma.taskWatcher.create({
+        data: { taskId: req.params.id, userId: req.user.id }
+      });
+      res.json({ watching: true });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const watchStatus = async (req, res, next) => {
+  try {
+    const existing = await prisma.taskWatcher.findUnique({
+      where: { taskId_userId: { taskId: req.params.id, userId: req.user.id } }
+    });
+    res.json({ watching: !!existing });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const myTasks = async (req, res, next) => {
+  try {
+    const { status } = req.query;
+
+    const memberships = await prisma.projectMember.findMany({
+      where: { userId: req.user.id },
+      select: { projectId: true }
+    });
+    const projectIds = memberships.map(m => m.projectId);
+
+    const where = {
+      assigneeId: req.user.id,
+      projectId: { in: projectIds }
+    };
+    if (status) where.status = status;
+
+    const tasks = await prisma.task.findMany({
+      where,
+      include: {
+        ...taskIncludes,
+        project: { select: { id: true, name: true } }
+      },
+      orderBy: [{ dueDate: 'asc' }, { createdAt: 'desc' }]
+    });
+
+    res.json(tasks);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const myKanban = async (req, res, next) => {
+  try {
+    const memberships = await prisma.projectMember.findMany({
+      where: { userId: req.user.id },
+      select: { projectId: true }
+    });
+    const projectIds = memberships.map(m => m.projectId);
+
+    const tasks = await prisma.task.findMany({
+      where: {
+        assigneeId: req.user.id,
+        projectId: { in: projectIds }
+      },
+      include: {
+        ...taskIncludes,
+        project: { select: { id: true, name: true } }
+      },
+      orderBy: [{ dueDate: 'asc' }, { createdAt: 'desc' }]
+    });
+
+    const columns = { TODO: [], IN_PROGRESS: [], REVIEW: [], DONE: [] };
+    tasks.forEach(task => {
+      if (columns[task.status]) columns[task.status].push(task);
+      else columns.TODO.push(task);
+    });
+
+    res.json(columns);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { create, update, remove, search, kanban, getById, watch, watchStatus, myTasks, myKanban };

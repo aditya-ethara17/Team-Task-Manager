@@ -75,6 +75,13 @@ const getById = async (req, res, next) => {
             subtasks: { orderBy: { createdAt: 'asc' } },
             labels: {
               include: { label: true }
+            },
+            timeEntries: {
+              include: { user: { select: { id: true, name: true } } },
+              orderBy: { createdAt: 'desc' }
+            },
+            watchers: {
+              include: { user: { select: { id: true, name: true } } }
             }
           },
           orderBy: { createdAt: 'desc' }
