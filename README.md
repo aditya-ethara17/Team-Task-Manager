@@ -1,4 +1,4 @@
-# TaskFlow - Team Task Manager
+# Taskify - Team Task Manager
 
 A full-stack team task management application with role-based access control. Users can create projects, manage teams, assign tasks, and track progress.
 
@@ -26,7 +26,7 @@ A full-stack team task management application with role-based access control. Us
 
 ```
 team-task-manager/
-├── server/
+├── backend/
 │   ├── prisma/          # Schema & migrations
 │   ├── src/
 │   │   ├── controllers/ # Route handlers
@@ -34,7 +34,7 @@ team-task-manager/
 │   │   ├── routes/       # API routes
 │   │   └── utils/        # Error handler
 │   └── package.json
-├── client/
+├── frontend/
 │   ├── src/
 │   │   ├── api/          # Axios client
 │   │   ├── components/   # Shared components
@@ -81,8 +81,8 @@ team-task-manager/
 npm run setup
 
 # Set up environment
-cp server/.env.example server/.env
-# Edit server/.env with your DATABASE_URL and JWT_SECRET
+cp backend/.env.example backend/.env
+# Edit backend/.env with your DATABASE_URL and JWT_SECRET
 
 # Run database migrations
 npm run db:migrate
@@ -95,7 +95,7 @@ The app will be available at `http://localhost:5173`.
 
 ### Environment Variables
 
-**server/.env**
+**backend/.env**
 ```
 DATABASE_URL=postgresql://user:password@host:5432/team_task_manager
 JWT_SECRET=your-secret-key

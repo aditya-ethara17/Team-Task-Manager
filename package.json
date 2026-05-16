@@ -2,13 +2,13 @@
   "name": "team-task-manager",
   "private": true,
   "scripts": {
-    "build": "cd client && npm install && npm run build",
-    "start": "cd server && npm install && npx prisma migrate deploy && node src/index.js",
-    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
-    "setup": "cd server && npm install && cd ../client && npm install",
-    "db:migrate": "cd server && npx prisma migrate dev",
-    "db:push": "cd server && npx prisma db push",
-    "db:studio": "cd server && npx prisma studio"
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && npm install && npx prisma generate && npx prisma migrate deploy && npm run seed && node src/index.js",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "setup": "cd backend && npm install && cd ../frontend && npm install",
+    "db:migrate": "cd backend && npx prisma migrate dev",
+    "db:push": "cd backend && npx prisma db push",
+    "db:studio": "cd backend && npx prisma studio"
   },
   "dependencies": {
     "concurrently": "^8.2.2"
