@@ -38,7 +38,7 @@ async function main() {
     createdUsers.push(user);
   }
 
-  // 3. Create Projects
+  // 3. Create Projects (idempotent)
   const projects = [
     { name: 'Website Redesign', description: 'Modernizing the company landing page' },
     { name: 'Mobile App', description: 'Building the new iOS/Android application' },
@@ -46,6 +46,16 @@ async function main() {
   ];
 
   for (const p of projects) {
+    // Check if project exists
+    const existingProject = await prisma.project.findFirst({
+      where: { name: p.name }
+    });
+
+    if (existingProject) {
+      console.log(`Project "${p.name}" already exists, skipping...`);
+      continue;
+    }
+
     const project = await prisma.project.create({
       data: {
         ...p,
