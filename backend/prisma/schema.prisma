@@ -4,8 +4,54 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  MEMBER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum IssueStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  REOPENED
+  CLOSED
+}
+
+enum Severity {
+  CRITICAL
+  MAJOR
+  MINOR
+  TRIVIAL
+}
+
+enum PhaseStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
 }
 
 model User {
@@ -13,7 +59,7 @@ model User {
   name      String
   email     String    @unique
   password  String
-  role      String    @default("MEMBER")
+  role      UserRole  @default(MEMBER)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -57,7 +103,7 @@ model Project {
 
 model ProjectMember {
   id        String   @id @default(cuid())
-  role      String   @default("MEMBER")
+  role      Role     @default(MEMBER)
   createdAt DateTime @default(now())
 
   projectId String
@@ -72,8 +118,8 @@ model Task {
   id          String     @id @default(cuid())
   title       String
   description String?
-  status      String     @default("TODO")
-  priority    String     @default("MEDIUM")
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
   dueDate     DateTime?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -218,7 +264,7 @@ model TaskWatcher {
   taskId String
   task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
   userId String
-  user   User @relation(fields: [userId], references: [id])
+  user      User @relation(fields: [userId], references: [id])
 
   @@unique([taskId, userId])
 }
@@ -229,7 +275,7 @@ model Phase {
   description String?
   startDate   DateTime?
   endDate     DateTime?
-  status      String      @default("PLANNED")
+  status      PhaseStatus @default(PLANNED)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -241,9 +287,9 @@ model Issue {
   id          String      @id @default(cuid())
   title       String
   description String?
-  status      String      @default("OPEN")
-  priority    String      @default("MEDIUM")
-  severity    String      @default("MAJOR")
+  status      IssueStatus @default(OPEN)
+  priority    Priority    @default(MEDIUM)
+  severity    Severity    @default(MAJOR)
   dueDate     DateTime?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
