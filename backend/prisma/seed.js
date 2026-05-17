@@ -7,13 +7,16 @@ async function main() {
   console.log('Seeding database...');
 
   // 1. Create Super Admin
-  const superPassword = await bcrypt.hash('Aditya@123', 12);
+  const superAdminName = process.env.SUPER_ADMIN_NAME || 'Aditya Raj';
+  const superAdminEmail = process.env.SUPER_ADMIN_EMAIL || 'aditya_raj@superadmin.com';
+  const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD || 'Aditya@123';
+  const superPassword = await bcrypt.hash(superAdminPassword, 12);
   const superAdmin = await prisma.user.upsert({
-    where: { email: 'aditya_raj@superadmin.com' },
+    where: { email: superAdminEmail },
     update: {},
     create: {
-      name: 'Aditya Raj',
-      email: 'aditya_raj@superadmin.com',
+      name: superAdminName,
+      email: superAdminEmail,
       password: superPassword,
       role: 'SUPER_ADMIN',
     },

@@ -1,6 +1,9 @@
 {
   "name": "server",
   "private": true,
+  "engines": {
+    "node": "20.x"
+  },
   "prisma": {
     "seed": "node prisma/seed.js"
   },
