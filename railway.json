@@ -2,10 +2,10 @@
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "npm install && cd backend && npm install && npx prisma generate && cd ../frontend && npm install && npm run build"
+    "buildCommand": "npm ci --include=dev && npm run railway:build"
   },
   "deploy": {
-    "startCommand": "cd backend && npx prisma migrate deploy && npm run seed && node src/index.js",
+    "startCommand": "npm run railway:start",
     "region": "asia-southeast1-eqsg3a",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 300,

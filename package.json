@@ -7,6 +7,8 @@
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
     "start": "cd backend && npm install && npx prisma generate && npx prisma migrate deploy && npm run seed && node src/index.js",
+    "railway:build": "npm --prefix backend ci --include=dev && npm --prefix backend run prisma:generate && npm --prefix frontend ci --include=dev && npm --prefix frontend run build",
+    "railway:start": "npm --prefix backend run prisma:migrate:deploy && npm --prefix backend run seed && npm --prefix backend start",
     "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
     "setup": "cd backend && npm install && cd ../frontend && npm install",
     "db:migrate": "cd backend && npx prisma migrate dev",
