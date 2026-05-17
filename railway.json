@@ -6,7 +6,15 @@
   },
   "deploy": {
     "startCommand": "npm run railway:start",
+    "runtime": "V2",
     "region": "asia-southeast1-eqsg3a",
+    "numReplicas": 1,
+    "sleepApplication": false,
+    "multiRegionConfig": {
+      "asia-southeast1-eqsg3a": {
+        "numReplicas": 1
+      }
+    },
     "healthcheckPath": "/health",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
