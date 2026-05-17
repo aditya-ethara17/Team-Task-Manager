@@ -9,15 +9,15 @@ export default function Settings() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Settings</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Settings</h1>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-6">
-        <h2 className="text-lg font-semibold text-gray-800">Preferences</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 space-y-6">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Preferences</h2>
 
-        <div className="flex items-center justify-between py-3 border-t border-gray-100">
+        <div className="flex items-center justify-between py-3 border-t border-gray-100 dark:border-gray-700">
           <div>
-            <p className="text-sm font-medium text-gray-700">Dark Mode</p>
-            <p className="text-xs text-gray-500">Toggle dark theme across the app</p>
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-200">Dark Mode</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Toggle dark theme across the app</p>
           </div>
           <button
             onClick={toggle}
@@ -27,10 +27,10 @@ export default function Settings() {
           </button>
         </div>
 
-        <div className="flex items-center justify-between py-3 border-t border-gray-100">
+        <div className="flex items-center justify-between py-3 border-t border-gray-100 dark:border-gray-700">
           <div>
-            <p className="text-sm font-medium text-gray-700">Account</p>
-            <p className="text-xs text-gray-500">{user?.email}</p>
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-200">Account</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
           </div>
           <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
             user?.role === 'SUPER_ADMIN' ? 'bg-yellow-100 text-yellow-800' :

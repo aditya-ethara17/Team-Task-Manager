@@ -15,48 +15,57 @@ export default function Layout({ children }) {
   };
 
   const linkClass = (path) =>
-    `px-3 py-2 rounded-md text-sm font-medium ${
+    `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
       location.pathname === path
-        ? 'text-white'
-        : 'hover:text-white'
+        ? 'text-indigo-600 dark:text-cyan-300'
+        : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
     }`;
 
   const isActive = (path) => location.pathname.startsWith(path);
+  const activeNavStyle = {
+    boxShadow: isDark ? '0 0 10px rgba(0, 240, 255, 0.2)' : 'none',
+    borderBottom: `2px solid ${isDark ? '#00f0ff' : '#4f46e5'}`
+  };
+  const navColor = (active) => active ? (isDark ? '#00f0ff' : '#4f46e5') : undefined;
 
   return (
-    <div className="min-h-screen" style={{ background: '#0a0a0f' }}>
-      <nav style={{ background: '#12121a', borderBottom: '1px solid #2a2a4a' }}>
+    <div className="min-h-screen bg-gray-50 text-gray-900 transition-colors dark:bg-gray-950 dark:text-gray-100">
+      <nav className="border-b border-gray-200 bg-white transition-colors dark:border-gray-800 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-8">
-              <Link to="/dashboard" className="text-xl font-bold tracking-tight" style={{ color: '#00f0ff', textShadow: '0 0 10px rgba(0, 240, 255, 0.5)' }}>
+              <Link
+                to="/dashboard"
+                className="text-xl font-bold tracking-tight text-indigo-600 dark:text-cyan-300"
+                style={isDark ? { textShadow: '0 0 10px rgba(0, 240, 255, 0.5)' } : undefined}
+              >
                 Taskify
               </Link>
               <div className="hidden sm:flex space-x-1">
-                <Link to="/dashboard" className={linkClass('/dashboard')} style={{ color: location.pathname === '/dashboard' ? '#00f0ff' : '#8888aa', ...(location.pathname === '/dashboard' ? { boxShadow: '0 0 10px rgba(0, 240, 255, 0.2)', borderBottom: '2px solid #00f0ff' } : {}) }}>
+                <Link to="/dashboard" className={linkClass('/dashboard')} style={{ color: navColor(location.pathname === '/dashboard'), ...(location.pathname === '/dashboard' ? activeNavStyle : {}) }}>
                   Dashboard
                 </Link>
-                <Link to="/my-tasks" className={linkClass('/my-tasks')} style={{ color: location.pathname === '/my-tasks' ? '#00f0ff' : '#8888aa', ...(location.pathname === '/my-tasks' ? { boxShadow: '0 0 10px rgba(0, 240, 255, 0.2)', borderBottom: '2px solid #00f0ff' } : {}) }}>
+                <Link to="/my-tasks" className={linkClass('/my-tasks')} style={{ color: navColor(location.pathname === '/my-tasks'), ...(location.pathname === '/my-tasks' ? activeNavStyle : {}) }}>
                   My Tasks
                 </Link>
-                <Link to="/projects" className={linkClass('/projects')} style={{ color: isActive('/projects') && !location.pathname.includes('/issues') ? '#00f0ff' : '#8888aa', ...(isActive('/projects') && !location.pathname.includes('/issues') ? { boxShadow: '0 0 10px rgba(0, 240, 255, 0.2)', borderBottom: '2px solid #00f0ff' } : {}) }}>
+                <Link to="/projects" className={linkClass('/projects')} style={{ color: navColor(isActive('/projects') && !location.pathname.includes('/issues')), ...(isActive('/projects') && !location.pathname.includes('/issues') ? activeNavStyle : {}) }}>
                   Projects
                 </Link>
-                <Link to="/chat" className={linkClass('/chat')} style={{ color: location.pathname === '/chat' ? '#00f0ff' : '#8888aa', ...(location.pathname === '/chat' ? { boxShadow: '0 0 10px rgba(0, 240, 255, 0.2)', borderBottom: '2px solid #00f0ff' } : {}) }}>
+                <Link to="/chat" className={linkClass('/chat')} style={{ color: navColor(location.pathname === '/chat'), ...(location.pathname === '/chat' ? activeNavStyle : {}) }}>
                   Chat
                 </Link>
-                <Link to="/dm" className={linkClass('/dm')} style={{ color: location.pathname === '/dm' ? '#00f0ff' : '#8888aa', ...(location.pathname === '/dm' ? { boxShadow: '0 0 10px rgba(0, 240, 255, 0.2)', borderBottom: '2px solid #00f0ff' } : {}) }}>
+                <Link to="/dm" className={linkClass('/dm')} style={{ color: navColor(location.pathname === '/dm'), ...(location.pathname === '/dm' ? activeNavStyle : {}) }}>
                   DMs
                 </Link>
-                <Link to="/timesheets" className={linkClass('/timesheets')} style={{ color: location.pathname === '/timesheets' ? '#00f0ff' : '#8888aa', ...(location.pathname === '/timesheets' ? { boxShadow: '0 0 10px rgba(0, 240, 255, 0.2)', borderBottom: '2px solid #00f0ff' } : {}) }}>
+                <Link to="/timesheets" className={linkClass('/timesheets')} style={{ color: navColor(location.pathname === '/timesheets'), ...(location.pathname === '/timesheets' ? activeNavStyle : {}) }}>
                   Timesheets
                 </Link>
                 {user?.role === 'SUPER_ADMIN' && (
-                  <Link to="/users" className={linkClass('/users')} style={{ color: location.pathname === '/users' ? '#00f0ff' : '#8888aa', ...(location.pathname === '/users' ? { boxShadow: '0 0 10px rgba(0, 240, 255, 0.2)', borderBottom: '2px solid #00f0ff' } : {}) }}>
+                  <Link to="/users" className={linkClass('/users')} style={{ color: navColor(location.pathname === '/users'), ...(location.pathname === '/users' ? activeNavStyle : {}) }}>
                     Users
                   </Link>
                 )}
-                <Link to="/settings" className={linkClass('/settings')} style={{ color: location.pathname === '/settings' ? '#00f0ff' : '#8888aa', ...(location.pathname === '/settings' ? { boxShadow: '0 0 10px rgba(0, 240, 255, 0.2)', borderBottom: '2px solid #00f0ff' } : {}) }}>
+                <Link to="/settings" className={linkClass('/settings')} style={{ color: navColor(location.pathname === '/settings'), ...(location.pathname === '/settings' ? activeNavStyle : {}) }}>
                   Settings
                 </Link>
               </div>
@@ -64,8 +73,7 @@ export default function Layout({ children }) {
             <div className="flex items-center space-x-4">
               <button
                 onClick={toggle}
-                className="p-2 rounded-lg transition-colors"
-                style={{ color: '#8888aa' }}
+                className="p-2 rounded-lg text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
                 title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               >
                 {isDark ? (
@@ -80,18 +88,17 @@ export default function Layout({ children }) {
               </button>
               <NotificationsDropdown />
               <div className="flex items-center space-x-2">
-                <span className="text-sm" style={{ color: '#8888aa' }}>{user?.name}</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">{user?.name}</span>
                 {user?.role === 'SUPER_ADMIN' && (
-                  <span className="px-2 py-0.5 text-xs font-bold rounded-full" style={{ background: '#ffaa00', color: '#0a0a0f' }}>SUPER ADMIN</span>
+                  <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-amber-400 text-gray-950">SUPER ADMIN</span>
                 )}
                 {user?.role === 'ADMIN' && (
-                  <span className="px-2 py-0.5 text-xs font-bold rounded-full" style={{ background: '#39ff14', color: '#0a0a0f' }}>ADMIN</span>
+                  <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-green-400 text-gray-950">ADMIN</span>
                 )}
               </div>
               <button
                 onClick={handleLogout}
-                className="px-3 py-2 rounded-md text-sm font-medium transition-all"
-                style={{ background: '#2a2a4a', color: '#e0e0ff', border: '1px solid #3a3a5a' }}
+                className="px-3 py-2 rounded-md border border-gray-200 bg-gray-100 text-sm font-medium text-gray-700 transition-all hover:bg-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
               >
                 Logout
               </button>
